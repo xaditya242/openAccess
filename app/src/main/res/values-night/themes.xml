@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SmartDoorLock" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary" type="color">@color/merah</item>
+        <item name="colorPrimaryVariant" type="color">@color/merah_muda</item>
+        <item name="colorOnPrimary" type="color">@color/white</item>
+        <item name="colorSecondary" type="color">@color/teal_200</item>
+        <item name="colorSecondaryVariant" type="color">@color/teal_700</item>
+        <item name="colorOnSecondary" type="color">@color/white</item>
+        <item name="android:statusBarColor" type="color">@color/merah</item>
+        <item name="android:navigationBarColor" type="color">@color/merah</item>" type=""
+        <item name="android:windowBackground" type="color">@color/white</item>
+    </style>
+
+    <style name="Theme.SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/white</item>
+    </style>
+</resources>
