@@ -1,5 +1,6 @@
 package com.example.smartdoorlock
 
+import android.animation.AnimatorSet
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dataSuhu: String
     private lateinit var dataLock: String
     private lateinit var dataID: String
+    private lateinit var dataKelembapan : String
+
 
     private var isMovedUp = false
     private var isOn = false
@@ -55,23 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         var isMovedUp = sharedPreferences.getBoolean("isMovedUp", false)
-        var isOn = sharedPreferences.getBoolean("isOn", false)
 
-        var panjang = indikator.width.toFloat()
 
-        indikator.post{
-            if(dataLock == "0") {
-                ObjectAnimator.ofFloat(indikator, "translationX", 0f).apply {
-                    duration = 100
-                    start()
-                }
-            } else {
-                ObjectAnimator.ofFloat(indikator, "translationX", panjang ).apply {
-                    duration = 100
-                    start()
-                }
-            }
-        }
 
         cardView.post {
             if (isMovedUp) {
@@ -116,13 +105,17 @@ class MainActivity : AppCompatActivity() {
                         dataLock = child.child("Data/lockStatus").value.toString()
                         dataSuhu = child.child("Data/Temperature").value.toString()
                         dataID = child.child("UserInfo/ID ESP").value.toString()
+                        dataKelembapan = child.child("Data/Humidity").value.toString()
 
-                        findViewById<TextView>(R.id.temperature).text = "$dataSuhu C"
+                        findViewById<TextView>(R.id.temperature).text = "$dataSuhu °C"
+                        findViewById<TextView>(R.id.humidity).text = "$dataKelembapan %"
 
                         if(dataLock == "1"){
-                            findViewById<TextView>(R.id.doorState).text = "Pintu Terkunci"
+                            findViewById<TextView>(R.id.doorState).text = "Door Opened"
+                            animateResize(indikator, dpToPx(20), dpToPx(20))
                         } else if (dataLock == "0"){
-                            findViewById<TextView>(R.id.doorState).text = "Pintu Terbuka"
+                            findViewById<TextView>(R.id.doorState).text = "Door Closed"
+                            animateResize(indikator, dpToPx(120 ), dpToPx(20))
                         }
 
 
@@ -195,6 +188,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun dpToPx(dp:Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            resources.displayMetrics
+        ).toInt()
+    }
+
+    private fun animateResize(view: View, targetWidth: Int, targetHeight: Int, duration : Long = 300) {
+        val startWidth = view.width
+        val startHeight = view.height
+
+        val widthAnimator = ValueAnimator.ofInt(startWidth, targetWidth)
+        widthAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val params = view.layoutParams
+            params.width = value
+            view.layoutParams = params
+        }
+
+        val heightAnimator = ValueAnimator.ofInt(startHeight, targetHeight)
+        heightAnimator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val params = view.layoutParams
+            params.height = value
+            view.layoutParams = params
+        }
+        AnimatorSet().apply {
+            playTogether(widthAnimator, heightAnimator)
+            this.duration = duration
+            start()
+        }
+
+    }
     private fun getEspIdFromSession(): String {
         val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
         return sharedPref.getString("espId", "") ?: ""

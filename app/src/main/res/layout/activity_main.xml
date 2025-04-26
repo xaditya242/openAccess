@@ -147,26 +147,37 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_weight="1.2">
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/offOn"
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="20dp"
-                    app:cardCornerRadius="20dp"
-                    android:backgroundTint="@color/merah"/>
-                <TextView
-                    android:id="@+id/doorState"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="15dp"
-                    android:fontFamily="@font/poppins_bold"
-                    android:gravity="center"
-                    android:text="Open"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:layout_gravity="start">
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/offOn"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginStart="28dp"
+                        app:cardCornerRadius="20dp"
+                        android:backgroundTint="@color/merah"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/doorState"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="15dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:gravity="center"
+                        android:text="Open"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -195,7 +206,7 @@
                             android:src="@drawable/suhu" />
 
                         <TextView
-                            android:id="@+id/temperature2"
+                            android:id="@+id/temperature"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center|right"
@@ -234,7 +245,7 @@
                             android:src="@drawable/kelembapan" />
 
                         <TextView
-                            android:id="@+id/temperature"
+                            android:id="@+id/humidity"
                             android:layout_width="wrap_content"
                             android:layout_height="58dp"
                             android:layout_gravity="center|right"
