@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="merah">#FFE00104</color>
-    <color name="merah_muda">#FFE69D9D</color>
+    <color name="merah_muda"></color>
 <!--    <color name="purple_700">#FF3700B3</color>-->
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="biru">#FF038BF1</color>
+    <!-- 30 Step Gradient from #FF39FF14 to #FFE00104 (Proporsional) -->
+    <color name="gradasi_1">#FF39FF14</color>
+    <color name="gradasi_2">#FF49F013</color>
+    <color name="gradasi_3">#FF59E212</color>
+    <color name="gradasi_4">#FF69D311</color>
+    <color name="gradasi_5">#FF79C510</color>
+    <color name="gradasi_6">#FF89B60F</color>
+    <color name="gradasi_7">#FF99A80D</color>
+    <color name="gradasi_8">#FFA9990C</color>
+    <color name="gradasi_9">#FFB98B0B</color>
+    <color name="gradasi_10">#FFC97C0A</color>
+    <color name="gradasi_11">#FFD06E09</color>
+    <color name="gradasi_12">#FFD65F09</color>
+    <color name="gradasi_13">#FFDB5108</color>
+    <color name="gradasi_14">#FFE14208</color>
+    <color name="gradasi_15">#FFE53407</color>
+    <color name="gradasi_16">#FFE92507</color>
+    <color name="gradasi_17">#FFEC1707</color>
+    <color name="gradasi_18">#FFEE0E06</color>
+    <color name="gradasi_19">#FFEF0906</color>
+    <color name="gradasi_20">#FFF00606</color>
+    <color name="gradasi_21">#FFF00505</color>
+    <color name="gradasi_22">#FFEE0505</color>
+    <color name="gradasi_23">#FFEB0405</color>
+    <color name="gradasi_24">#FFE90304</color>
+    <color name="gradasi_25">#FFE70304</color>
 </resources>

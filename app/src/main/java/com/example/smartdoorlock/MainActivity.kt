@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dataID: String
 
     private var isMovedUp = false
+    private var isOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,12 +48,30 @@ class MainActivity : AppCompatActivity() {
         val btCard = findViewById<CardView>(R.id.cardButton)
         val status = findViewById<TextView>(R.id.status)
         val onOff = findViewById<CardView>(R.id.onOff)
+        val indikator = findViewById<CardView>(R.id.offOn)
 
         val pengurangTinggi = onOff.height.toFloat()/5
 //        Log.d("DEBUG", "Tinggi: $pengurangTinggi")
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         var isMovedUp = sharedPreferences.getBoolean("isMovedUp", false)
+        var isOn = sharedPreferences.getBoolean("isOn", false)
+
+        var panjang = indikator.width.toFloat()
+
+        indikator.post{
+            if(dataLock == "0") {
+                ObjectAnimator.ofFloat(indikator, "translationX", 0f).apply {
+                    duration = 100
+                    start()
+                }
+            } else {
+                ObjectAnimator.ofFloat(indikator, "translationX", panjang ).apply {
+                    duration = 100
+                    start()
+                }
+            }
+        }
 
         cardView.post {
             if (isMovedUp) {

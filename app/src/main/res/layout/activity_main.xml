@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Smart \nDoor Lock"
+                android:text="openAccess"
                 android:layout_marginLeft="30dp"
                 android:fontFamily="@font/poppins_bold"
                 android:textColor="@color/white"
@@ -68,6 +68,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="15dp">
+
+
                     <androidx.cardview.widget.CardView
                         android:id="@+id/onOff"
                         android:layout_width="match_parent"
@@ -76,6 +78,15 @@
                         app:cardCornerRadius="50dp"
                         android:backgroundTint="@color/black">
                     </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="2dp">
+
                 </LinearLayout>
 <!--                Corner Luar = Padding + Corner Dalam-->
             </androidx.cardview.widget.CardView>
@@ -125,41 +136,123 @@
         android:layout_marginBottom="30dp"
         app:cardCornerRadius="50dp">
 
-        <TextView
-            android:id="@+id/doorState"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Door State"
-            android:layout_gravity="center_vertical"
-            android:textSize="20sp"
-            android:layout_marginLeft="15dp"
-            android:fontFamily="@font/poppins_bold"
-            android:textColor="@color/black"
-            android:gravity="center_vertical"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="180dp"
-            android:layout_height="100dp"
-            android:layout_gravity="right"
-            app:cardElevation="10dp"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="50dp">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="40dp"
-                android:src="@drawable/suhu"/>
-            <TextView
-                android:id="@+id/temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|right"
-                android:layout_marginRight="20dp"
-                android:text="24 C"
-                android:textSize="40sp"
-                android:fontFamily="@font/poppins_bold"
-                android:textColor="@color/black"/>
-        </androidx.cardview.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1.2">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/offOn"
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"
+                    app:cardCornerRadius="20dp"
+                    android:backgroundTint="@color/merah"/>
+                <TextView
+                    android:id="@+id/doorState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:gravity="center"
+                    android:text="Open"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_gravity="right"
+                    app:cardElevation="5dp"
+                    android:backgroundTint="@color/white"
+                    app:cardCornerRadius="50dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dp">
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="29dp"
+                            android:src="@drawable/suhu" />
+
+                        <TextView
+                            android:id="@+id/temperature2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|right"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="13dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="24 C"
+                            android:textColor="@color/black"
+                            android:textSize="30sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/black"
+                        android:layout_marginTop="54dp">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dp"
+                        android:layout_gravity="bottom">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:src="@drawable/kelembapan" />
+
+                        <TextView
+                            android:id="@+id/temperature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="58dp"
+                            android:layout_gravity="center|right"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="100 % "
+                            android:textColor="@color/black"
+                            android:textSize="30sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="49dp" />
+                    </LinearLayout>
+
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 </LinearLayout>
