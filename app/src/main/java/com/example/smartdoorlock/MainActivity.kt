@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         val status = findViewById<TextView>(R.id.status)
         val onOff = findViewById<CardView>(R.id.onOff)
         val indikator = findViewById<CardView>(R.id.offOn)
+        val textID = findViewById<TextView>(R.id.textID)
 
         val pengurangTinggi = onOff.height.toFloat()/5
 //        Log.d("DEBUG", "Tinggi: $pengurangTinggi")
@@ -94,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         val espId = getEspIdFromSession() // Ambil ID ESP dari session
         Log.d("DEBUG", "ID ESP dari session: $espId")
 
+        textID.text = "ID: $espId"
         val userId = currentUser.uid
         val databaseReference = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
 

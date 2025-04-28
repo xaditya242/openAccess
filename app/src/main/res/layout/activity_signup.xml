@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:hint="Enter ID ESP"
-                android:inputType="textPassword"
+                android:inputType="text"
                 android:textSize="15sp"
                 android:fontFamily="@font/poppins_regular"
                 android:background="@null"

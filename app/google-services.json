@@ -1,66 +1,26 @@
 {
   "project_info": {
-    "project_number": "1034973824158",
-    "firebase_url": "https://projectesp-8485c-default-rtdb.firebaseio.com",
-    "project_id": "projectesp-8485c",
-    "storage_bucket": "projectesp-8485c.appspot.com"
+    "project_number": "128511618715",
+    "project_id": "openaccess-b0130",
+    "storage_bucket": "openaccess-b0130.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1034973824158:android:07833ff6da074ba7daa78f",
-        "android_client_info": {
-          "package_name": "com.SmartKost"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1034973824158-b20p2jatfp3bpedvf4c6fjutrouiq702.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAO2cjXr6UFMj9JnnTjXmkLgGoxJNAj5_Q"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1034973824158-b20p2jatfp3bpedvf4c6fjutrouiq702.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1034973824158:android:ead52ef40b8344bedaa78f",
+        "mobilesdk_app_id": "1:128511618715:android:66561bd3d7e89da5c1e03e",
         "android_client_info": {
           "package_name": "com.example.smartdoorlock"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1034973824158-b20p2jatfp3bpedvf4c6fjutrouiq702.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAO2cjXr6UFMj9JnnTjXmkLgGoxJNAj5_Q"
+          "current_key": "AIzaSyD0pu_Pm3jzOXB6jliTuqYxjcXfOlu6RL0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1034973824158-b20p2jatfp3bpedvf4c6fjutrouiq702.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

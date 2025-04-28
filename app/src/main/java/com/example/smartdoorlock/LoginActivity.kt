@@ -39,6 +39,11 @@ class LoginActivity : AppCompatActivity(){
         val signUpButton = findViewById<TextView>(R.id.createAcc)
         val eyeImage = findViewById<ImageView>(R.id.eyeLoginImage)
         val eye = findViewById<LinearLayout>(R.id.eyeLogin)
+        val forgotPw = findViewById<TextView>(R.id.forgotPw)
+
+        forgotPw.setOnClickListener{
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+        }
 
 
         signUpButton.setOnClickListener{

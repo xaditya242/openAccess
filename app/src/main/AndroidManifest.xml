@@ -58,6 +58,11 @@
             android:theme="@style/Theme.SmartDoorLock">
         </activity>
 
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:theme="@style/Theme.SmartDoorLock">
+        </activity>
+
     </application>
 
 </manifest>

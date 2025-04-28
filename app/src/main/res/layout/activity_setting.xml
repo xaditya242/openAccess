@@ -91,6 +91,7 @@
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white"
                                 android:layout_marginTop="1dp"
+                                android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/poppins_regular"
                                 android:text="The List Member allows users to view the members of a group or community, showing details like names, profile pictures, and membership status."
                                 android:textSize="11sp"/>
@@ -173,7 +174,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/white"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1.4"/>
 
             </LinearLayout>
 
