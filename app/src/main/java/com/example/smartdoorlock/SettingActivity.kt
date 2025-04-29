@@ -38,6 +38,12 @@ class SettingActivity : AppCompatActivity() {
             finish()
         }
 
+        findViewById<CardView>(R.id.dataLog).setOnClickListener{
+            val intent = Intent(this, DataLogActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         findViewById<CardView>(R.id.logOutBt).setOnClickListener{
             val dialog = CustomDialogFragment(
                 "Alert",

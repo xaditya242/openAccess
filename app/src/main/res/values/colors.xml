@@ -9,4 +9,5 @@
     <color name="biru">#FF038BF1</color>
     <!-- 30 Step Gradient from #FF39FF14 to #FFE00104 (Proporsional) -->
     <color name="merah_muda">#EC8E8E</color>
+    <color name="grey">#FFCCCCCC</color>
 </resources>
