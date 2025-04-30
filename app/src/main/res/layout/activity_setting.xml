@@ -92,6 +92,8 @@
                                 android:textColor="@color/white"
                                 android:layout_marginTop="-3dp"
                                 android:layout_marginBottom="5dp"
+                                android:textAlignment="viewStart"
+                                android:justificationMode="inter_word"
                                 android:fontFamily="@font/poppins_regular"
                                 android:text="The List Member allows users to view the members of a group or community, showing details like names, profile pictures, and membership status."
                                 android:textSize="10sp"/>
@@ -152,6 +154,8 @@
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white"
                                 android:fontFamily="@font/poppins_regular"
+                                android:textAlignment="viewStart"
+                                android:justificationMode="inter_word"
                                 android:text="The List Member allows users to view the members of a group or community, showing details like names, profile pictures, and membership status."
                                 android:textSize="9sp"/>
                         </LinearLayout>
@@ -212,7 +216,9 @@
                                 android:layout_marginTop="-3dp"
                                 android:layout_marginBottom="5dp"
                                 android:fontFamily="@font/poppins_regular"
-                                android:text="The Data Log allows users to monitor app activity by recording actions like button clicks and timestamps for tracking and analysis."
+                                android:textAlignment="viewStart"
+                                android:justificationMode="inter_word"
+                                android:text="The Data Log records the power outage history, including the time when the electricity goes off and comes back on, along with the duration of the outage."
                                 android:textSize="10sp"/>
 
                         </LinearLayout>

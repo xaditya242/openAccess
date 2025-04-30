@@ -4,25 +4,28 @@
     android:orientation="vertical"
     android:padding="10dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="5dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="5dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
             app:cardCornerRadius="10dp">
             <TextView
+                android:id="@+id/tvTanggal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="29-04-2025 14:00 WIB"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:fontFamily="@font/poppins_bold"
                 android:textColor="@color/black"/>
             <LinearLayout
@@ -37,29 +40,32 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/tvWaktuMati"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textColor="@color/black"
                         android:fontFamily="@font/poppins_regular"
                         android:text="Listrik Mati pada jam : 14:00 WIB"/>
                     <TextView
+                        android:id="@+id/tvWaktuNyala"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textSize="12sp"
+                        android:textSize="11sp"
                         android:textColor="@color/black"
                         android:fontFamily="@font/poppins_regular"
-                        android:text="Listrik Aktif pada jam : 15:30 WIB"/>"
+                        android:text="Listrik Aktif pada jam : 15:30 WIB"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1.3">
                     <TextView
+                        android:id="@+id/tvDurasi"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="bottom"
-                        android:textSize="10sp"
+                        android:textSize="9sp"
                         android:textColor="@color/black"
                         android:fontFamily="@font/poppins_regular"
                         android:text="Durasi Nonaktif : 1 Jam 30 Menit"/>"
@@ -69,7 +75,7 @@
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
-                android:background="@color/black"/>
+                android:background="@color/merah"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
