@@ -68,7 +68,7 @@
                         android:textSize="9sp"
                         android:textColor="@color/black"
                         android:fontFamily="@font/poppins_regular"
-                        android:text="Durasi Nonaktif : 1 Jam 30 Menit"/>"
+                        android:text="Durasi Nonaktif : 1 Jam 30 Menit"/>
                 </LinearLayout>
 
             </LinearLayout>
