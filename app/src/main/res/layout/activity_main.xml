@@ -37,8 +37,17 @@
                 <TextView
                     android:id="@+id/textID"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="ID: "
+                    android:layout_marginLeft="30dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:id="@+id/textUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="User: "
                     android:layout_marginLeft="30dp"
                     android:fontFamily="@font/poppins_bold"
                     android:textColor="@color/white"

@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         val onOff = findViewById<CardView>(R.id.onOff)
         val indikator = findViewById<CardView>(R.id.offOn)
         val textID = findViewById<TextView>(R.id.textID)
+        val textUser = findViewById<TextView>(R.id.textUser)
 
         val pengurangTinggi = onOff.height.toFloat()/5
 //        Log.d("DEBUG", "Tinggi: $pengurangTinggi")
@@ -95,7 +96,6 @@ class MainActivity : AppCompatActivity() {
         val espId = getEspIdFromSession() // Ambil ID ESP dari session
         Log.d("DEBUG", "ID ESP dari session: $espId")
 
-        textID.text = "ID: $espId"
         val userId = currentUser.uid
         val databaseReference = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
 
@@ -112,6 +112,9 @@ class MainActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.temperature).text = "$dataSuhu °C"
                         findViewById<TextView>(R.id.humidity).text = "$dataKelembapan %"
 
+                        textUser.text = "User:  ${child.child("UserInfo/email").value.toString()}"
+                        textID.text = "ID:  $espId"
+
                         if(dataLock == "1"){
                             findViewById<TextView>(R.id.doorState).text = "Door Opened"
                             animateResize(indikator, dpToPx(20), dpToPx(20))
@@ -119,8 +122,6 @@ class MainActivity : AppCompatActivity() {
                             findViewById<TextView>(R.id.doorState).text = "Door Closed"
                             animateResize(indikator, dpToPx(120 ), dpToPx(20))
                         }
-
-
                         break
                     }
                 }
