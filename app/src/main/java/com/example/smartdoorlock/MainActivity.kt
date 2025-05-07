@@ -68,14 +68,14 @@ class MainActivity : AppCompatActivity() {
             if (isMovedUp) {
                 // Misalnya, jika ingin memindahkan cardView ke atas seutuhnya,
                 // kamu bisa menggunakan nilai tinggi cardView sebagai acuan
-                cardView.translationY = -onOff.height.toFloat() + (onOff.height.toFloat()/5)
+                cardView.translationY = -onOff.height.toFloat() + (onOff.height.toFloat()/9)
                 imageView.setImageResource(R.drawable.unlock)
 //                btCard.backgroundTintList = getColorStateList(R.color.black)
                 onOff.backgroundTintList = getColorStateList(white)
                 status.text = "Opened"
 //                status.setTextColor(ContextCompat.getColor(this, R.color.white))
             } else {
-                cardView.translationY = 0f
+                cardView.translationY = (onOff.height.toFloat()/1000)
                 imageView.setImageResource(R.drawable.locked)
                 status.text = "Closed"
                 onOff.backgroundTintList = getColorStateList(R.color.black)
@@ -144,14 +144,14 @@ class MainActivity : AppCompatActivity() {
 
         // Set tampilan awal sesuai state yang disimpan
         if (isMovedUp) {
-            cardView.translationY = -onOff.height.toFloat() + (onOff.height.toFloat()/5)
+            cardView.translationY = -onOff.height.toFloat() + (onOff.height.toFloat()/9)
             imageView.setImageResource(R.drawable.unlock)
             onOff.backgroundTintList = getColorStateList(R.color.black)
 //            btCard.backgroundTintList = getColorStateList(white)
             status.text = "Opened"
 //            status.setTextColor(ContextCompat.getColor(this, R.color.white))
         } else {
-            cardView.translationY = 0f//0f
+            cardView.translationY = (onOff.height.toFloat()/1000)
             imageView.setImageResource(R.drawable.locked)
             onOff.backgroundTintList = getColorStateList(white)
 //            btCard.backgroundTintList = getColorStateList(R.color.black)
@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
             vibratePhone()
 
             if (isMovedUp) {
-                ObjectAnimator.ofFloat(cardView, "translationY", 0f).apply {
+                ObjectAnimator.ofFloat(cardView, "translationY", (onOff.height.toFloat()/1000)).apply {
                     duration = 100
                     start()
                 }
@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 //                status.setTextColor(ContextCompat.getColor(this, R.color.black))
             } else {
                 // Di sini kita gunakan tinggi cardView agar animasi ke atas konsisten
-                ObjectAnimator.ofFloat(cardView, "translationY", -onOff.height.toFloat() + (onOff.height.toFloat()/5)).apply {
+                ObjectAnimator.ofFloat(cardView, "translationY", -onOff.height.toFloat() + (onOff.height.toFloat()/9)).apply {
                     duration = 100
                     start()
                 }
