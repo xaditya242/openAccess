@@ -28,8 +28,8 @@ class DataLogAdapter(private val dataList: List<DataLog>) :
         val log = dataList[position]
         Log.d("AdapterBind", "Menampilkan item ke-$position: ${log.tanggal}")
         holder.tanggal.text = "Tanggal: ${log.tanggal?.replace('_', ' ')} WIB"
-        holder.waktuMati.text = "Mati: ${log.waktuListrikMati} WIB"
-        holder.waktuNyala.text = "Nyala: ${log.waktuListrikNyala} WIB"
-        holder.durasi.text = "Durasi: ${log.durasiListrikMati}"
+        holder.waktuMati.text = "Listrik Mati pada Pukul: ${log.waktuListrikMati} WIB"
+        holder.waktuNyala.text = "Listrik Hidup pada Pukul: ${log.waktuListrikNyala} WIB"
+        holder.durasi.text = "Durasi Mati Listrik: ${log.durasiListrikMati}"
     }
 }

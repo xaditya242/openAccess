@@ -31,11 +31,12 @@
             android:layout_height="match_parent"
             android:layout_weight="5"/>
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:text="Add Member"
-            android:layout_weight="0"
-            android:textSize="25sp"
+            android:layout_weight="5"
+            android:gravity="center"
+            android:autoSizeTextType="uniform"
             android:fontFamily="@font/poppins_bold"
             android:textColor="@color/black"/>
         <View
@@ -46,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attach the Access card to the back of \nthe phone to get the ID"
-            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
             android:gravity="center"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_bold"/>
@@ -69,7 +70,7 @@
             android:text="Status : Ready to scan . . . ."
             android:fontFamily="@font/poppins_bold"
             android:textColor="@color/black"
-            android:textSize="13sp"/>
+            android:autoSizeTextType="uniform"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -95,12 +96,12 @@
                 android:orientation="vertical">
                 <TextView
                     android:layout_marginTop="15dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tagname: "
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppins_bold"
-                    android:textSize="13sp"
+                    android:autoSizeTextType="uniform"
                     android:layout_marginLeft="15dp"/>
 
                 <androidx.cardview.widget.CardView
@@ -118,7 +119,7 @@
                         android:layout_height="match_parent"
                         android:hint="Enter Member Name"
                         android:layout_gravity="center"
-                        android:textSize="15dp"
+                        android:autoSizeTextType="uniform"
                         android:textColorHint="@color/black"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/poppins_regular"
@@ -128,13 +129,13 @@
                 </androidx.cardview.widget.CardView>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:text="ID Card: "
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppins_bold"
-                    android:textSize="13sp"
+                    android:autoSizeTextType="uniform"
                     android:layout_marginLeft="15dp"/>
 
                 <androidx.cardview.widget.CardView
@@ -153,7 +154,7 @@
                         android:layout_height="wrap_content"
                         android:text="The access card ID has not been read"
                         android:layout_gravity="center"
-                        android:textSize="15dp"
+                        android:autoSizeTextType="uniform"
                         android:layout_marginLeft="5dp"
                         android:textColor="@color/black"
                         android:fontFamily="monospace"/>
@@ -181,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:text="Add Member"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:autoSizeTextType="uniform"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"

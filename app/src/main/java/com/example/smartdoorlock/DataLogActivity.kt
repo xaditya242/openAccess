@@ -17,9 +17,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.time.Duration
+
 
 class DataLogActivity: AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -97,7 +101,7 @@ class DataLogActivity: AppCompatActivity() {
                     // Cek struktur data log di Firebase
                     val waktuMati = child.child("waktuMati").getValue(String::class.java) ?: "-"
                     val waktuNyala = child.child("waktuNyala").getValue(String::class.java) ?: "-"
-                    val durasi = child.child("durasi").getValue(String::class.java) ?: "-"
+                    val durasi = hitungDurasi(waktuMati, waktuNyala, key)
 
                     Log.d("DataLogContent", "[$key] mati=$waktuMati, nyala=$waktuNyala, durasi=$durasi")
 
@@ -141,6 +145,38 @@ class DataLogActivity: AppCompatActivity() {
         }
     }
 
+    fun hitungDurasi(mati: String, nyala: String, keyTanggal: String): String {
+        return try {
+            val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy_HH:mm:ss", Locale.getDefault())
+            val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+            // Gabungkan tanggal dari key dengan waktu mati
+            val waktuMatiFull = dateTimeFormat.parse("$keyTanggal".substringBeforeLast("_") + "_$mati")!!
+
+            // Cek apakah nyala terjadi di hari yang sama atau keesokan harinya
+            var waktuNyalaFull = dateTimeFormat.parse("$keyTanggal".substringBeforeLast("_") + "_$nyala")
+
+            if (waktuNyalaFull != null && waktuNyalaFull.before(waktuMatiFull)) {
+                // Kalau waktu nyala lebih awal (berarti keesokan harinya)
+                val cal = Calendar.getInstance()
+                cal.time = dateTimeFormat.parse("$keyTanggal".substringBeforeLast("_") + "_$nyala")!!
+                cal.add(Calendar.DATE, 1)
+                waktuNyalaFull = cal.time
+            }
+
+            val durasiMillis = waktuNyalaFull!!.time - waktuMatiFull.time
+            val durasiDetik = durasiMillis / 1000
+
+            val jam = durasiDetik / 3600
+            val menit = (durasiDetik % 3600) / 60
+            val detik = durasiDetik % 60
+
+            String.format("%02d:%02d:%02d", jam, menit, detik)
+        } catch (e: Exception) {
+            "-"
+        }
+    }
+
     private fun loadDataLogFiltered(monthsBack: Int) {
         val databaseRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock/$espId/DataLog")
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -163,7 +199,7 @@ class DataLogActivity: AppCompatActivity() {
 
                     val waktuMati = child.child("waktuMati").getValue(String::class.java) ?: "-"
                     val waktuNyala = child.child("waktuNyala").getValue(String::class.java) ?: "-"
-                    val durasiRaw  = child.child("durasi").getValue(String::class.java) ?: "-"
+                    val durasiRaw = hitungDurasi(waktuMati, waktuNyala, key)
                     val durasi = formatDurasi(durasiRaw)
 
                     findViewById<TextView>(R.id.judulData).text = "Menampilkan Data $monthsBack Bulan Terakhir"

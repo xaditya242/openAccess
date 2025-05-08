@@ -26,10 +26,11 @@
         <TextView
             android:id="@+id/judul"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="Welcome Back"
-            android:textSize="32sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="32sp"
             android:textColor="@color/merah"
             android:fontFamily="@font/poppins_bold"/>
 
@@ -38,7 +39,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Login to your account"
-            android:textSize="15sp"
+            android:autoSizeMaxTextSize="15sp"
+            android:autoSizeTextType="uniform"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_regular"/>
 
@@ -123,10 +125,12 @@
 
             <TextView
                 android:id="@+id/forgotPw"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeTextType="uniform"
                 android:text="forgot password?"
+                android:gravity="right"
                 android:fontFamily="@font/poppins_regular"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>

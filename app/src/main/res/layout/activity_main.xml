@@ -31,7 +31,7 @@
                     android:layout_marginStart="30dp"
                     android:fontFamily="@font/poppins_bold"
                     android:textColor="@color/white"
-                    android:textSize="30sp"/>
+                    android:textSize="33sp"/>
 
                 <ImageView
                     android:id="@+id/settingBt"

@@ -24,7 +24,8 @@
                 android:layout_weight="1"
                 android:text="Data Logs"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMaxTextSize="25sp"
                 android:fontFamily="@font/poppins_bold"/>
             <LinearLayout
                 android:id="@+id/pilihWaktu"
@@ -60,7 +61,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black"
                 android:gravity="center"
-                android:textSize="12sp"
+                android:autoSizeTextType="uniform"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Menampilkan"/>
             <androidx.recyclerview.widget.RecyclerView

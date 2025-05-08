@@ -18,7 +18,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:gravity="center"
             android:text="Register"
             android:textSize="32sp"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Create your new account"
-            android:textSize="15sp"
+            android:autoSizeTextType="uniform"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_regular"/>
 
@@ -147,13 +147,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="I agree to processing of "
-                android:textSize="13sp"
+                android:autoSizeTextType="uniform"
                 android:textColor="@color/black"
                 android:fontFamily="@font/poppins_regular"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:autoSizeTextType="uniform"
                 android:text="personal data"
                 android:fontFamily="@font/poppins_bold"
                 android:textStyle="bold"

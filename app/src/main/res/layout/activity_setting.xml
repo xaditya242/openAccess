@@ -47,7 +47,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="35dp"
                     android:gravity="center_horizontal"
                     android:layout_marginTop="10dp"
                     android:textSize="25sp"
@@ -157,7 +157,7 @@
                                 android:textAlignment="viewStart"
                                 android:justificationMode="inter_word"
                                 android:text="The List Member allows users to view the members of a group or community, showing details like names, profile pictures, and membership status."
-                                android:textSize="9sp"/>
+                                android:textSize="10sp"/>
                         </LinearLayout>
                         <LinearLayout
                             android:layout_width="match_parent"
