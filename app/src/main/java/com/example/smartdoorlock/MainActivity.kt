@@ -14,22 +14,17 @@ import android.os.Vibrator
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import com.example.smartdoorlock.R.color.black
 import com.example.smartdoorlock.R.color.white
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -104,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 for (child in snapshot.children) {
                     val userIdFromDb = child.child("UserInfo/userId").value.toString()
                     if (userIdFromDb == userId) {
-                        dataLock = child.child("Data/lockStatus").value.toString()
+                        dataLock = child.child("Data/lockCommand").value.toString()
                         dataSuhu = child.child("Data/Temperature").value.toString()
                         dataID = child.child("UserInfo/ID ESP").value.toString()
                         dataKelembapan = child.child("Data/Humidity").value.toString()
