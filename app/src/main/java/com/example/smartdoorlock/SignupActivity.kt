@@ -75,7 +75,7 @@ class SignupActivity : AppCompatActivity() {
 
                             val monitorData = mapOf(
                                 "Humidity" to 0,
-                                "lockStatus" to 0,
+                                "Storm" to 0,
                                 "lockCommand" to 0,
                                 "Temperature" to 0
                             )
@@ -87,20 +87,10 @@ class SignupActivity : AppCompatActivity() {
                                 "userId" to userId
                             )
 
-                            val memberData = mapOf(
-                                "RFID" to "0",
-                                "Nama Anggota" to "Abc"
-                            )
-
                             dataRef.setValue(monitorData)
                                 .addOnCompleteListener{
 
                                 }
-
-//                            memberList.setValue(memberData)
-//                                .addOnCompleteListener{
-//
-//                                }
 
                             userInfoRef.setValue(userData)
                                 .addOnCompleteListener {

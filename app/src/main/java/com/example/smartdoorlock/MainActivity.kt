@@ -25,6 +25,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dataLock: String
     private lateinit var dataID: String
     private lateinit var dataKelembapan : String
+    private var dataStorm by Delegates.notNull<Int>()
+    private lateinit var imgStorm : ImageView
 
 
     private var isMovedUp = false
@@ -103,12 +109,17 @@ class MainActivity : AppCompatActivity() {
                         dataSuhu = child.child("Data/Temperature").value.toString()
                         dataID = child.child("UserInfo/ID ESP").value.toString()
                         dataKelembapan = child.child("Data/Humidity").value.toString()
+                        val value  = child.child("Data/Storm").value.toString()
+                        dataStorm = value?.toIntOrNull() ?: 0
 
                         findViewById<TextView>(R.id.temperature).text = "$dataSuhu °C"
                         findViewById<TextView>(R.id.humidity).text = "$dataKelembapan %"
 
                         textUser.text = "User:  ${child.child("UserInfo/email").value.toString()}"
                         textID.text = "ID:  $espId"
+
+                        imgStorm = findViewById(R.id.storm)
+                        imgStorm.setImageResource(if (dataStorm == 1) R.drawable.red_storm else R.drawable.black_storm)
 
                         if(dataLock == "1"){
                             findViewById<TextView>(R.id.doorState).text = "Door Opened"
@@ -158,6 +169,12 @@ class MainActivity : AppCompatActivity() {
         cardView.setOnClickListener {
             toggleLockCommand()
             vibratePhone()
+
+            val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
+            val currentTime = Calendar.getInstance().time
+            val formatter = SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault())
+            val formattedTime = formatter.format(currentTime)
+            tvTimestamp.text = "Timestamp: $formattedTime"
 
             if (isMovedUp) {
                 ObjectAnimator.ofFloat(cardView, "translationY", (onOff.height.toFloat()/1000)).apply {
