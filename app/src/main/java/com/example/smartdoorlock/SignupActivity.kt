@@ -2,6 +2,7 @@ package com.example.smartdoorlock
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -67,11 +68,10 @@ class SignupActivity : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
-                            val userDatabase = FirebaseDatabase.getInstance().getReference("SmartDoorLock").child(ID_ESP)
+                            val userDatabase = FirebaseDatabase.getInstance().getReference("openAccess").child(ID_ESP)
 
                             val dataRef = userDatabase.child("Data")
                             val userInfoRef = userDatabase.child("UserInfo")
-                            val memberList = userDatabase.child("MemberList").child("0")
 
                             val monitorData = mapOf(
                                 "Humidity" to 0,
@@ -79,7 +79,6 @@ class SignupActivity : AppCompatActivity() {
                                 "lockCommand" to 0,
                                 "Temperature" to 0
                             )
-
 
                             val userData = mapOf(
                                 "email" to email,
@@ -94,6 +93,7 @@ class SignupActivity : AppCompatActivity() {
 
                             userInfoRef.setValue(userData)
                                 .addOnCompleteListener {
+                                    saveEspIdToSession(ID_ESP)
                                     Toast.makeText(this, "Sign Up successful!", Toast.LENGTH_SHORT).show()
                                     startActivity(Intent(this, MainActivity::class.java))
                                     finish()
@@ -112,5 +112,12 @@ class SignupActivity : AppCompatActivity() {
         super.onBackPressed()
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
+    }
+
+    private fun saveEspIdToSession(espId: String) {
+        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putString("espId", espId)
+        editor.apply()
     }
 }

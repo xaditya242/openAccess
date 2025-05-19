@@ -43,6 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     private var isMovedUp = false
     private var isOn = false
+    private var currentValue: Int = 0
+    private var value: Int = 0
+    private var move: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,18 +53,15 @@ class MainActivity : AppCompatActivity() {
 
         val cardView = findViewById<CardView>(R.id.lockUnlockBt)
         val imageView = findViewById<ImageView>(R.id.kunci)
-        val btCard = findViewById<CardView>(R.id.cardButton)
         val status = findViewById<TextView>(R.id.status)
         val onOff = findViewById<CardView>(R.id.onOff)
         val indikator = findViewById<CardView>(R.id.offOn)
         val textID = findViewById<TextView>(R.id.textID)
         val textUser = findViewById<TextView>(R.id.textUser)
 
-        val pengurangTinggi = onOff.height.toFloat()/5
-//        Log.d("DEBUG", "Tinggi: $pengurangTinggi")
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        var isMovedUp = sharedPreferences.getBoolean("isMovedUp", false)
+        var isMovedUp = sharedPreferences.getBoolean("isMovedUp", move)
 
 
 
@@ -74,11 +74,13 @@ class MainActivity : AppCompatActivity() {
 //                btCard.backgroundTintList = getColorStateList(R.color.black)
                 onOff.backgroundTintList = getColorStateList(white)
                 status.text = "Opened"
+                isOn = true;
 //                status.setTextColor(ContextCompat.getColor(this, R.color.white))
             } else {
                 cardView.translationY = (onOff.height.toFloat()/1000)
                 imageView.setImageResource(R.drawable.locked)
                 status.text = "Closed"
+                isOn = false
                 onOff.backgroundTintList = getColorStateList(R.color.black)
 //                btCard.backgroundTintList = getColorStateList(white)
 //                status.setTextColor(ContextCompat.getColor(this, R.color.black))
@@ -98,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("DEBUG", "ID ESP dari session: $espId")
 
         val userId = currentUser.uid
-        val databaseReference = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+        val databaseReference = FirebaseDatabase.getInstance().getReference("openAccess")
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -109,8 +111,11 @@ class MainActivity : AppCompatActivity() {
                         dataSuhu = child.child("Data/Temperature").value.toString()
                         dataID = child.child("UserInfo/ID ESP").value.toString()
                         dataKelembapan = child.child("Data/Humidity").value.toString()
-                        val value  = child.child("Data/Storm").value.toString()
-                        dataStorm = value?.toIntOrNull() ?: 0
+                        value  = child.child("Data/Storm").value?.toString()?.toInt() ?: 0
+                        currentValue = child.child("Data/lockCommand").value.toString().toInt()
+
+                        if (currentValue == 1) move = true
+                        else move = false
 
                         findViewById<TextView>(R.id.temperature).text = "$dataSuhu °C"
                         findViewById<TextView>(R.id.humidity).text = "$dataKelembapan %"
@@ -119,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                         textID.text = "ID:  $espId"
 
                         imgStorm = findViewById(R.id.storm)
-                        imgStorm.setImageResource(if (dataStorm == 1) R.drawable.red_storm else R.drawable.black_storm)
+                        imgStorm.setImageResource(if (value == 1) R.drawable.red_storm else R.drawable.black_storm)
 
                         if(dataLock == "1"){
                             findViewById<TextView>(R.id.doorState).text = "Door Opened"
@@ -155,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             onOff.backgroundTintList = getColorStateList(R.color.black)
 //            btCard.backgroundTintList = getColorStateList(white)
             status.text = "Opened"
+            isOn = true
 //            status.setTextColor(ContextCompat.getColor(this, R.color.white))
         } else {
             cardView.translationY = (onOff.height.toFloat()/1000)
@@ -162,19 +168,20 @@ class MainActivity : AppCompatActivity() {
             onOff.backgroundTintList = getColorStateList(white)
 //            btCard.backgroundTintList = getColorStateList(R.color.black)
             status.text = "Closed"
+            isOn = false
 //            status.setTextColor(ContextCompat.getColor(this, R.color.black))
         }
 
         // Listener untuk cardView
         cardView.setOnClickListener {
-            toggleLockCommand()
-            vibratePhone()
-
             val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
             val currentTime = Calendar.getInstance().time
             val formatter = SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault())
             val formattedTime = formatter.format(currentTime)
             tvTimestamp.text = "Timestamp: $formattedTime"
+
+            toggleLockCommand()
+            vibratePhone()
 
             if (isMovedUp) {
                 ObjectAnimator.ofFloat(cardView, "translationY", (onOff.height.toFloat()/1000)).apply {
@@ -185,6 +192,7 @@ class MainActivity : AppCompatActivity() {
                 animateColorChange(onOff, getColor(white), getColor(R.color.black), 100)
 //                animateColorChange(btCard, getColor(R.color.black), getColor(white), 100)
                 status.text = "Closed"
+                isOn = false
 //                status.setTextColor(ContextCompat.getColor(this, R.color.black))
             } else {
                 // Di sini kita gunakan tinggi cardView agar animasi ke atas konsisten
@@ -196,10 +204,12 @@ class MainActivity : AppCompatActivity() {
                 animateColorChange(onOff, getColor(R.color.black), getColor(white), 100)
 //                animateColorChange(btCard, getColor(white), getColor(R.color.black), 100)
                 status.text = "Opened"
+                isOn = true
 //                status.setTextColor(ContextCompat.getColor(this, R.color.white))
             }
             isMovedUp = !isMovedUp
             sharedPreferences.edit().putBoolean("isMovedUp", isMovedUp).apply()
+            Log.d("ON OFF", "Posisi ON: $isOn")
         }
     }
 
@@ -267,7 +277,7 @@ class MainActivity : AppCompatActivity() {
             val userId = user.uid
 
             // Cari IDESP berdasarkan userId di semua IDESP
-            val smartDoorRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+            val smartDoorRef = FirebaseDatabase.getInstance().getReference("openAccess")
 
             smartDoorRef.get().addOnSuccessListener { smartDoorSnapshot ->
                 for (idEspSnapshot in smartDoorSnapshot.children) {
@@ -276,13 +286,13 @@ class MainActivity : AppCompatActivity() {
 
                     if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
                         // Path ke LockCommand
-                        val lockCommandRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+                        val lockCommandRef = FirebaseDatabase.getInstance().getReference("openAccess")
                             .child(idEsp).child("Data").child("lockCommand")
 
                         // Ambil nilai LockCommand saat ini untuk toggling
                         lockCommandRef.get().addOnSuccessListener { commandSnapshot ->
-                            val currentValue = commandSnapshot.getValue(Int::class.java) ?: 0
-                            val newValue = if (currentValue == 1) 0 else 1
+                            currentValue = commandSnapshot.getValue(Int::class.java) ?: 0
+                            val newValue = if (isOn) 1 else 0
 
                             // Tulis nilai baru ke LockCommand
                             lockCommandRef.setValue(newValue).addOnSuccessListener {

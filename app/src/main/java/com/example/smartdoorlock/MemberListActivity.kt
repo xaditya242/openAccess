@@ -59,7 +59,7 @@ class MemberListActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             val userId = user.uid
-            val smartDoorRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+            val smartDoorRef = FirebaseDatabase.getInstance().getReference("openAccess")
 
             smartDoorRef.get().addOnSuccessListener { snapshot ->
                 for (idEspSnapshot in snapshot.children) {
@@ -68,7 +68,7 @@ class MemberListActivity : AppCompatActivity() {
 
                     if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
                         val memberRef = FirebaseDatabase.getInstance()
-                            .getReference("SmartDoorLock/$idEsp/MemberList")
+                            .getReference("openAccess/$idEsp/MemberList")
 
                         memberRef.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(memberSnapshot: DataSnapshot) {
@@ -124,7 +124,7 @@ class MemberListActivity : AppCompatActivity() {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             val userId = user.uid
-            val smartDoorRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+            val smartDoorRef = FirebaseDatabase.getInstance().getReference("openAccess")
 
             smartDoorRef.get().addOnSuccessListener { snapshot ->
                 for (idEspSnapshot in snapshot.children) {
@@ -132,7 +132,7 @@ class MemberListActivity : AppCompatActivity() {
                     val userInfoSnapshot = idEspSnapshot.child("UserInfo").child("userId")
 
                     if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
-                        val memberRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock/$idEsp/MemberList")
+                        val memberRef = FirebaseDatabase.getInstance().getReference("openAccess/$idEsp/MemberList")
                         memberRef.child(index.toString()).removeValue().addOnSuccessListener {
                             reorderMembers(idEsp)
                         }
@@ -144,7 +144,7 @@ class MemberListActivity : AppCompatActivity() {
     }
 
     private fun reorderMembers(idEsp: String) {
-        val memberRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock/$idEsp/MemberList")
+        val memberRef = FirebaseDatabase.getInstance().getReference("openAccess/$idEsp/MemberList")
         memberRef.get().addOnSuccessListener { snapshot ->
             val updatedList = mutableListOf<Member>()
             for (child in snapshot.children) {

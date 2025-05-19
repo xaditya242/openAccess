@@ -48,6 +48,7 @@ class LoginActivity : AppCompatActivity(){
 
         signUpButton.setOnClickListener{
             startActivity(Intent(this, SignupActivity::class.java))
+            finish()
         }
 
         eye.setOnClickListener {
@@ -78,7 +79,7 @@ class LoginActivity : AppCompatActivity(){
                             Log.d("DEBUG", "User ID yang login: $userId")
 
                             // Ambil ID ESP dari Firebase Database
-                            val databaseReference = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+                            val databaseReference = FirebaseDatabase.getInstance().getReference("openAccess")
                             databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     for (child in snapshot.children) {

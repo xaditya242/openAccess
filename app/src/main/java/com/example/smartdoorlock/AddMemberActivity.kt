@@ -47,8 +47,6 @@ class AddMemberActivity : AppCompatActivity() {
     private lateinit var tvNfcStatus: TextView
     private lateinit var btAddMember: CardView
     private lateinit var nameMember: EditText
-    private lateinit var databaseReference: DatabaseReference
-    private lateinit var userId: String
     private lateinit var dataID: String
 
 
@@ -114,11 +112,6 @@ class AddMemberActivity : AppCompatActivity() {
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         }
-    }
-
-    private fun getUserIdFromSession(): String {
-        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-        return sharedPref.getString("userId", "") ?: ""
     }
 
     override fun onResume() {
@@ -252,7 +245,7 @@ class AddMemberActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
                 val userId = user.uid
-                val smartDoorRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+                val smartDoorRef = FirebaseDatabase.getInstance().getReference("openAccess")
 
                 smartDoorRef.get().addOnSuccessListener { smartDoorSnapshot ->
                     for (idEspSnapshot in smartDoorSnapshot.children) {
@@ -260,7 +253,7 @@ class AddMemberActivity : AppCompatActivity() {
                         val userInfoSnapshot = idEspSnapshot.child("UserInfo").child("userId")
 
                         if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
-                            val memberListRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock")
+                            val memberListRef = FirebaseDatabase.getInstance().getReference("openAccess")
                                 .child(idEsp).child("MemberList")
 
                             // Ambil semua data member

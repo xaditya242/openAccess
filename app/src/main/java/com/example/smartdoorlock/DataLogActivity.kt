@@ -17,13 +17,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.time.Duration
-
 
 class DataLogActivity: AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -81,7 +77,7 @@ class DataLogActivity: AppCompatActivity() {
     }
 
     private fun loadDataLog() {
-        val databaseRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock/$espId/DataLog")
+        val databaseRef = FirebaseDatabase.getInstance().getReference("openAccess/$espId/DataLog")
 
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -178,7 +174,7 @@ class DataLogActivity: AppCompatActivity() {
     }
 
     private fun loadDataLogFiltered(monthsBack: Int) {
-        val databaseRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock/$espId/DataLog")
+        val databaseRef = FirebaseDatabase.getInstance().getReference("openAccess/$espId/DataLog")
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 dataList.clear()

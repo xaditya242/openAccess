@@ -21,7 +21,7 @@ class SplashActivity : AppCompatActivity() {
         val espId = getEspIdFromSession() // Ambil ID ESP dari session
         Log.d("SplashScreen", "ID ESP dari session: $espId")
 
-        databaseRef = FirebaseDatabase.getInstance().getReference("SmartDoorLock/$espId/Data")
+        databaseRef = FirebaseDatabase.getInstance().getReference("openAccess/$espId/Data")
 
         databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

@@ -68,7 +68,7 @@ class MemberAdapter(
             return
         }
         val databaseRef = FirebaseDatabase.getInstance()
-            .getReference("SmartDoorLock/$idEsp/MemberList")
+            .getReference("openAccess/$idEsp/MemberList")
         // Hapus data berdasarkan key (index) di Firebase
         databaseRef.child("$position").removeValue()
             .addOnSuccessListener {
@@ -89,7 +89,7 @@ class MemberAdapter(
      */
     private fun reorderFirebaseMembers() {
         val databaseRef = FirebaseDatabase.getInstance()
-            .getReference("SmartDoorLock/$idEsp/MemberList")
+            .getReference("openAccess/$idEsp/MemberList")
 
         // Ambil data yang tersimpan sebelum reorder
         databaseRef.get().addOnSuccessListener { snapshot ->
