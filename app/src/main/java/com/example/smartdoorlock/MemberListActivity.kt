@@ -68,7 +68,7 @@ class MemberListActivity : AppCompatActivity() {
 
                     if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
                         val memberRef = FirebaseDatabase.getInstance()
-                            .getReference("openAccess/$idEsp/MemberList")
+                            .getReference("openAccess/$idEsp/dataStream/MemberList")
 
                         memberRef.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(memberSnapshot: DataSnapshot) {
@@ -144,7 +144,7 @@ class MemberListActivity : AppCompatActivity() {
     }
 
     private fun reorderMembers(idEsp: String) {
-        val memberRef = FirebaseDatabase.getInstance().getReference("openAccess/$idEsp/MemberList")
+        val memberRef = FirebaseDatabase.getInstance().getReference("openAccess/$idEsp/dataStream/MemberList")
         memberRef.get().addOnSuccessListener { snapshot ->
             val updatedList = mutableListOf<Member>()
             for (child in snapshot.children) {

@@ -70,7 +70,7 @@ class SignupActivity : AppCompatActivity() {
                             val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
                             val userDatabase = FirebaseDatabase.getInstance().getReference("openAccess").child(ID_ESP)
 
-                            val dataRef = userDatabase.child("Data")
+                            val dataRef = userDatabase.child("dataStream/Data")
                             val userInfoRef = userDatabase.child("UserInfo")
 
                             val monitorData = mapOf(

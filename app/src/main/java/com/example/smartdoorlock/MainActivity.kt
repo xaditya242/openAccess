@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
@@ -23,6 +25,7 @@ import com.example.smartdoorlock.R.color.white
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
@@ -40,12 +43,27 @@ class MainActivity : AppCompatActivity() {
     private var dataStorm by Delegates.notNull<Int>()
     private lateinit var imgStorm : ImageView
 
-
+    private var ssid_ip: String = ""
+    private var mode_connection: String = ""
     private var isMovedUp = false
     private var isOn = false
     private var currentValue: Int = 0
     private var value: Int = 0
     private var move: Boolean = false
+
+    private var lastUpdateTime: Long = 0
+    private val timeoutMillis: Long = 10000 // 10 detik
+    private val checkInterval: Long = 5000 // cek setiap 2 detik
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val statusChecker = object : Runnable {
+        override fun run() {
+            val currentTime = System.currentTimeMillis()
+            val isOnline = (currentTime - lastUpdateTime <= timeoutMillis)
+            showStatus(isOnline)
+            handler.postDelayed(this, checkInterval)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +78,9 @@ class MainActivity : AppCompatActivity() {
         val textUser = findViewById<TextView>(R.id.textUser)
 
 
+
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         var isMovedUp = sharedPreferences.getBoolean("isMovedUp", move)
-
-
 
         cardView.post {
             if (isMovedUp) {
@@ -107,12 +124,22 @@ class MainActivity : AppCompatActivity() {
                 for (child in snapshot.children) {
                     val userIdFromDb = child.child("UserInfo/userId").value.toString()
                     if (userIdFromDb == userId) {
-                        dataLock = child.child("Data/lockCommand").value.toString()
-                        dataSuhu = child.child("Data/Temperature").value.toString()
+                        dataLock = child.child("dataStream/Data/lockState").value.toString()
+                        dataSuhu = child.child("dataStream/Data/Temperature").value.toString()
                         dataID = child.child("UserInfo/ID ESP").value.toString()
-                        dataKelembapan = child.child("Data/Humidity").value.toString()
-                        value  = child.child("Data/Storm").value?.toString()?.toInt() ?: 0
-                        currentValue = child.child("Data/lockCommand").value.toString().toInt()
+                        dataKelembapan = child.child("dataStream/Data/Humidity").value.toString()
+                        value  = child.child("dataStream/Data/Storm").value?.toString()?.toInt() ?: 0
+                        currentValue = child.child("dataStream/Data/lockCommand").value.toString().toInt()
+                        ssid_ip = child.child("Credentials/SSID_IP").value.toString()
+                        mode_connection = child.child("Credentials/Mode").value.toString()
+
+                        val toggleValue = child.child("DeviceStatus/Toggle").value as? Boolean
+                        if (toggleValue != null) {
+                            lastUpdateTime = System.currentTimeMillis()
+                            Log.d("TOGGLE", "Toggle diterima: $toggleValue")
+                        } else {
+                            Log.w("TOGGLE", "Path toggle belum ada atau nilainya null")
+                        }
 
                         if (currentValue == 1) move = true
                         else move = false
@@ -133,9 +160,11 @@ class MainActivity : AppCompatActivity() {
                             findViewById<TextView>(R.id.doorState).text = "Door Closed"
                             animateResize(indikator, dpToPx(120 ), dpToPx(20))
                         }
+
                         break
                     }
                 }
+                handler.post(statusChecker)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -146,7 +175,8 @@ class MainActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.settingBt).setOnClickListener {
             //startActivity(Intent(this, SettingActivity::class.java))
             val intent = Intent(this, SettingActivity::class.java)
-            //intent.putExtra("ID_ESP", dataID) // Ganti dengan ID yang benar
+            intent.putExtra("esp_ssid", ssid_ip)
+            intent.putExtra("koneksi", mode_connection)
             startActivity(intent)
             finish()
         }
@@ -221,6 +251,15 @@ class MainActivity : AppCompatActivity() {
         ).toInt()
     }
 
+    private fun showStatus(isOnline: Boolean) {
+        val statusView = findViewById<ImageView>(R.id.onlineIndicator) // tambahkan ini di layout kamu
+        if (isOnline) {
+            statusView.visibility = View.VISIBLE
+        } else {
+            statusView.visibility = View.INVISIBLE
+        }
+    }
+
     private fun animateResize(view: View, targetWidth: Int, targetHeight: Int, duration : Long = 300) {
         val startWidth = view.width
         val startHeight = view.height
@@ -287,7 +326,7 @@ class MainActivity : AppCompatActivity() {
                     if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
                         // Path ke LockCommand
                         val lockCommandRef = FirebaseDatabase.getInstance().getReference("openAccess")
-                            .child(idEsp).child("Data").child("lockCommand")
+                            .child(idEsp).child("dataStream/Data").child("lockCommand")
 
                         // Ambil nilai LockCommand saat ini untuk toggling
                         lockCommandRef.get().addOnSuccessListener { commandSnapshot ->

@@ -61,84 +61,54 @@ class MemberAdapter(
         dialog.show(fragmentManager, "CustomDialog")
     }
 
-    // Hapus data pada Firebase sesuai index, lalu urutkan ulang data
     private fun deleteMember(position: Int) {
-        if (position >= members.size) {
-            Log.e("MemberAdapter", "Invalid index for deletion: $position, size: ${members.size}")
-            return
-        }
+        // Ambil semua data dari Firebase dulu
         val databaseRef = FirebaseDatabase.getInstance()
-            .getReference("openAccess/$idEsp/MemberList")
-        // Hapus data berdasarkan key (index) di Firebase
-        databaseRef.child("$position").removeValue()
-            .addOnSuccessListener {
-                Log.d("DeleteMember", "Data berhasil dihapus: $position")
-                reorderFirebaseMembers()
-            }
-            .addOnFailureListener {
-                Log.e("DeleteMember", "Gagal menghapus data: ${it.message}")
-            }
-    }
+            .getReference("openAccess/$idEsp/dataStream/MemberList")
 
-    /**
-     * Fungsi untuk mengurutkan ulang data di Firebase:
-     * 1. Ambil snapshot data yang tersimpan pada "MemberList".
-     * 2. Hapus seluruh data di path tersebut.
-     * 3. Tulis ulang data dengan key yang berurutan (0, 1, 2, dst.) menggunakan field "RFID" dan "Nama Anggota".
-     * 4. Setelah semua selesai, perbarui tampilan adapter.
-     */
-    private fun reorderFirebaseMembers() {
-        val databaseRef = FirebaseDatabase.getInstance()
-            .getReference("openAccess/$idEsp/MemberList")
-
-        // Ambil data yang tersimpan sebelum reorder
         databaseRef.get().addOnSuccessListener { snapshot ->
             val updatedMembers = mutableListOf<Member>()
-            snapshot.children.forEach { child ->
-                // Sesuaikan nama field sesuai data yang ada di Firebase
-                val rfid = child.child("RFID").getValue(String::class.java) ?: ""
-                val name = child.child("Nama Member").getValue(String::class.java) ?: ""
-                updatedMembers.add(Member(rfid, name))
+            snapshot.children.forEachIndexed { index, child ->
+                if (index != position) { // Simpan semua data KECUALI index yang ingin dihapus
+                    val rfid = child.child("RFID").getValue(String::class.java) ?: ""
+                    val name = child.child("Nama Member").getValue(String::class.java) ?: ""
+                    updatedMembers.add(Member(rfid, name))
+                }
             }
 
-            // Hapus seluruh data yang ada
-            databaseRef.removeValue().addOnSuccessListener {
-                if (updatedMembers.isEmpty()) {
-                    updateList(emptyList(), emptyList())
-                    return@addOnSuccessListener
-                }
+            // Lanjutkan ke reorder data setelah penghapusan
+            reorderFirebaseMembers(updatedMembers)
 
-                val updatedKeys = mutableListOf<String>()
-                var completed = 0
-                val total = updatedMembers.size
-
-                // Tulis ulang data dengan key yang berurutan
-                updatedMembers.forEachIndexed { index, member ->
-                    // Buat Map agar field yang disimpan adalah "RFID" dan "Nama Anggota"
-                    val newMemberMap = mapOf(
-                        "RFID" to member.rfid,
-                        "Nama Member" to member.name
-                    )
-                    databaseRef.child(index.toString()).setValue(newMemberMap)
-                        .addOnSuccessListener {
-                            updatedKeys.add(index.toString())
-                            completed++
-                            if (completed == total) {
-                                updateList(updatedMembers, updatedKeys)
-                            }
-                        }
-                        .addOnFailureListener { error ->
-                            Log.e("ReorderMembers", "Gagal menulis data index $index: ${error.message}")
-                        }
-                }
-            }.addOnFailureListener { error ->
-                Log.e("ReorderMembers", "Gagal menghapus data lama: ${error.message}")
-            }
-        }.addOnFailureListener { error ->
-            Log.e("ReorderMembers", "Gagal mengambil data untuk reorder: ${error.message}")
+        }.addOnFailureListener {
+            Log.e("DeleteMember", "Gagal mengambil data sebelum hapus: ${it.message}")
         }
     }
 
+    private fun reorderFirebaseMembers(updatedMembers: List<Member>) {
+        val databaseRef = FirebaseDatabase.getInstance()
+            .getReference("openAccess/$idEsp/dataStream/MemberList")
+
+        // Buat map lengkap yang akan langsung dikirim sebagai satu JSON object
+        val fullMap = mutableMapOf<String, Any>()
+        updatedMembers.forEachIndexed { index, member ->
+            val memberMap = mapOf(
+                "RFID" to member.rfid,
+                "Nama Member" to member.name
+            )
+            fullMap[index.toString()] = memberMap
+        }
+
+        // Upload ulang seluruh data secara sekaligus
+        databaseRef.setValue(fullMap)
+            .addOnSuccessListener {
+                Log.d("ReorderMembers", "Berhasil reorder dan upload semua data")
+                val newKeys = fullMap.keys.toList()
+                updateList(updatedMembers, newKeys)
+            }
+            .addOnFailureListener {
+                Log.e("ReorderMembers", "Gagal mengupload data baru: ${it.message}")
+            }
+    }
     // Perbarui data di adapter dan refresh tampilan
     fun updateList(newMembers: List<Member>, newKeys: List<String>) {
         members.clear()

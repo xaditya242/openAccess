@@ -23,7 +23,6 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -33,11 +32,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class AddMemberActivity : AppCompatActivity() {
 
@@ -77,7 +72,6 @@ class AddMemberActivity : AppCompatActivity() {
             } else {
                 authenticateUser()
             }
-
         }
 
         // Cek apakah device support NFC
@@ -237,8 +231,6 @@ class AddMemberActivity : AppCompatActivity() {
         )
         startActivityForResult(intent, 0)  // Gunakan requestCode default
     }
-
-    // Result setelah autentikasi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -253,58 +245,49 @@ class AddMemberActivity : AppCompatActivity() {
                         val userInfoSnapshot = idEspSnapshot.child("UserInfo").child("userId")
 
                         if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
-                            val memberListRef = FirebaseDatabase.getInstance().getReference("openAccess")
-                                .child(idEsp).child("MemberList")
+                            val memberListRef = FirebaseDatabase.getInstance()
+                                .getReference("openAccess")
+                                .child(idEsp)
+                                .child("dataStream/MemberList")
 
-                            // Ambil semua data member
                             memberListRef.get().addOnSuccessListener { memberSnapshot ->
-                                val memberList = mutableListOf<Pair<String, Map<String, Any>>>()
-                                var isDuplicate = false  // Flag untuk deteksi duplikasi
+                                val memberMap = mutableMapOf<String, Any>()
+                                var isDuplicate = false
 
-                                // Simpan semua data yang ada
+                                // Ambil semua data dan simpan dalam Map
                                 for (child in memberSnapshot.children) {
                                     val key = child.key ?: continue
-                                    val data = child.value as? Map<String, Any> ?: continue
-                                    memberList.add(Pair(key, data))
+                                    val value = child.value as? Map<String, Any> ?: continue
+                                    memberMap[key] = value
 
-                                    // Cek apakah ID ESP sudah ada dalam database
-                                    if (data["RFID"] == tvTagId.text.toString()) {
+                                    // Cek duplikat berdasarkan RFID
+                                    if (value["RFID"] == tvTagId.text.toString()) {
                                         isDuplicate = true
                                     }
                                 }
 
-                                // Jika ID ESP sudah ada, tampilkan peringatan
                                 if (isDuplicate) {
-                                    Toast.makeText(this, "Member has been registered" +
-                                            "!", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Member has been registered!", Toast.LENGTH_SHORT).show()
                                     return@addOnSuccessListener
                                 }
 
-                                // Urutkan ulang semua data dari index 0, 1, 2, dst.
-                                memberList.sortBy { it.first.toInt() }
+                                // Tambahkan anggota baru
+                                val newIndex = memberMap.size.toString()
+                                val newMemberData = mapOf(
+                                    "RFID" to tvTagId.text.toString(),
+                                    "Nama Member" to nameMember.text.toString()
+                                )
+                                memberMap[newIndex] = newMemberData
 
-                                // Hapus semua data lama dan tulis ulang agar indeks berurutan
-                                memberListRef.removeValue().addOnSuccessListener {
-                                    for ((index, entry) in memberList.withIndex()) {
-                                        memberListRef.child(index.toString()).setValue(entry.second)
-                                    }
-
-                                    // Tambahkan anggota baru di indeks terakhir + 1
-                                    val newIndex = memberList.size
-                                    val newMemberRef = memberListRef.child(newIndex.toString())
-
-                                    newMemberRef.child("RFID").setValue(tvTagId.text.toString())
-                                    newMemberRef.child("Nama Member").setValue(nameMember.text.toString())
-                                        .addOnSuccessListener {
-                                            Toast.makeText(this, "Anggota berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
-                                            val intent = Intent(this, MemberListActivity::class.java)
-                                            intent.putExtra("ID_ESP", userId)
-                                            startActivity(intent)
-                                            finish()
-                                        }
-                                        .addOnFailureListener {
-                                            Toast.makeText(this, "Gagal mengirim data ke Firebase", Toast.LENGTH_SHORT).show()
-                                        }
+                                // Kirim seluruh map sebagai JSON ke Firebase
+                                memberListRef.setValue(memberMap).addOnSuccessListener {
+                                    Toast.makeText(this, "Anggota berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this, MemberListActivity::class.java)
+                                    intent.putExtra("ID_ESP", userId)
+                                    startActivity(intent)
+                                    finish()
+                                }.addOnFailureListener {
+                                    Toast.makeText(this, "Gagal mengirim data ke Firebase", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             break
