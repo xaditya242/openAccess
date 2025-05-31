@@ -65,7 +65,7 @@
             android:textSize="12sp"
             android:textColor="@color/black"
             android:fontFamily="@font/poppins_regular"
-            android:text="Pilih jaringan ESP8266:" />
+            android:text="Pilih ID ESP8266:" />
         <ProgressBar
             android:id="@+id/progressBarWifi"
             android:layout_width="wrap_content"

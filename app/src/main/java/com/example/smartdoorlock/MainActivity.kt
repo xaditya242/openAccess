@@ -204,11 +204,11 @@ class MainActivity : AppCompatActivity() {
 
         // Listener untuk cardView
         cardView.setOnClickListener {
-            val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
-            val currentTime = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault())
-            val formattedTime = formatter.format(currentTime)
-            tvTimestamp.text = "Timestamp: $formattedTime"
+//            val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
+//            val currentTime = Calendar.getInstance().time
+//            val formatter = SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault())
+//            val formattedTime = formatter.format(currentTime)
+//            tvTimestamp.text = "Timestamp: $formattedTime"
 
             toggleLockCommand()
             vibratePhone()

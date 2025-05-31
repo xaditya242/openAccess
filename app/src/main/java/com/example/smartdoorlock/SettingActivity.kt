@@ -9,12 +9,17 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class SettingActivity : AppCompatActivity() {
 
     private lateinit var bt: ImageView
     private lateinit var espSSID: String
     private lateinit var koneksi: String
+    private lateinit var auth: FirebaseAuth
 
     private lateinit var connection: TextView
     private lateinit var ssid_ip: TextView
@@ -33,21 +38,42 @@ class SettingActivity : AppCompatActivity() {
             finish()
         }
 
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        val userId = currentUser?.uid
+        val databaseReference = FirebaseDatabase.getInstance().getReference("openAccess")
+
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (child in snapshot.children) {
+                    val userIdFromDb = child.child("UserInfo/userId").value.toString()
+                    if (userIdFromDb == userId) {
+                        espSSID = child.child("Credentials/SSID_IP").value.toString()
+                        koneksi = child.child("Credentials/Mode").value.toString()
+
+                        if(koneksi == "Ethernet"){
+                            val ssidJudul = findViewById<TextView>(R.id.ssidJudul)
+                            ssidJudul.text = "IP Address"
+                        } else if (koneksi == "Wifi"){
+                            val ssidJudul = findViewById<TextView>(R.id.ssidJudul)
+                            ssidJudul.text = "SSID"
+                        }
+
+                        connection.text = ": $koneksi"
+                        ssid_ip.text = ": $espSSID"
+                        break
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                //tvData.text = "Failed to load data: ${error.message}"
+            }
+        })
+
         val espId = getEspIdFromSession()
         Log.d("SettingActivity", "ID_ESP: $espId")
-        espSSID = intent.getStringExtra("esp_ssid") ?: ""
-        koneksi = intent.getStringExtra("koneksi") ?: ""
 
-        if(koneksi == "Ethernet"){
-            val ssidJudul = findViewById<TextView>(R.id.ssidJudul)
-            ssidJudul.text = "IP Address"
-        } else if (koneksi == "Wifi"){
-            val ssidJudul = findViewById<TextView>(R.id.ssidJudul)
-            ssidJudul.text = "SSID"
-        }
-
-        connection.text = ": $koneksi"
-        ssid_ip.text = ": $espSSID"
 
         findViewById<CardView>(R.id.memberList).setOnClickListener{
             val intent = Intent(this, MemberListActivity::class.java)

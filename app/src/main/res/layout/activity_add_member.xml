@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="ID Card: "
+                    android:text="ID Card: ex 0xAA 0xBB 0xCC 0xDD"
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppins_bold"
                     android:autoSizeTextType="uniform"
@@ -148,15 +148,17 @@
                     app:cardCornerRadius="9dp"
                     android:backgroundTint="@color/white">
 
-                    <TextView
+                    <EditText
                         android:id="@+id/ID_RFID"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="The access card ID has not been read"
+                        android:hint="The access card ID has not been read"
                         android:layout_gravity="center"
                         android:autoSizeTextType="uniform"
                         android:layout_marginLeft="5dp"
+                        android:textColorHint="@color/black"
                         android:textColor="@color/black"
+                        android:background="@null"
                         android:fontFamily="monospace"/>
 
                 </androidx.cardview.widget.CardView>

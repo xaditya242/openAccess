@@ -38,7 +38,7 @@ class AddMemberActivity : AppCompatActivity() {
 
     private var nfcAdapter: NfcAdapter? = null
 
-    private lateinit var tvTagId: TextView
+    private lateinit var tvTagId: EditText
     private lateinit var tvNfcStatus: TextView
     private lateinit var btAddMember: CardView
     private lateinit var nameMember: EditText
@@ -82,12 +82,12 @@ class AddMemberActivity : AppCompatActivity() {
         }
 
         // Set listener untuk TextView agar bisa menyalin ID
-        tvTagId.setOnClickListener {
-            if (tvTagId.hint != "Belum ada kartu terbaca") {
-                copyToClipboard(tvTagId.text.toString())
-                Toast.makeText(this, "ID telah disalin ke clipboard", Toast.LENGTH_SHORT).show()
-            }
-        }
+//        tvTagId.setOnClickListener {
+//            if (tvTagId.hint != "Belum ada kartu terbaca") {
+//                copyToClipboard(tvTagId.text.toString())
+//                Toast.makeText(this, "ID telah disalin ke clipboard", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
         // Handle intent jika aplikasi dibuka dari NFC scan
         if (intent != null) {
@@ -171,7 +171,7 @@ class AddMemberActivity : AppCompatActivity() {
 
                 // Update UI
                 vibratePhone()
-                tvTagId.text = formattedId
+                tvTagId.setText(formattedId)
                 tvNfcStatus.text = "Status: Tag berhasil dibaca!"
             }
         }
