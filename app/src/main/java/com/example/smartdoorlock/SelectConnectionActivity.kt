@@ -132,7 +132,6 @@ class SelectConnectionActivity: AppCompatActivity() {
             val selectedSSID = wifiScanResults[position].SSID
             connectToESP8266AP(selectedSSID, koneksi)
         }
-
     }
 
     override fun onRequestPermissionsResult(
