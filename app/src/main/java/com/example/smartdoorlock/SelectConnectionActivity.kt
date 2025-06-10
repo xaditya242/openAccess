@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
@@ -84,18 +85,19 @@ class SelectConnectionActivity: AppCompatActivity() {
 
             linearWifi.visibility = View.VISIBLE
 
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_PERMISSION_REQUEST_CODE
-                )
-            } else {
-                startWifiScan()
-            }
+//            if (ContextCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED
+//            ) {
+//                requestPermissions(
+//                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//                    LOCATION_PERMISSION_REQUEST_CODE
+//                )
+//            } else {
+//                startWifiScan()
+//            }
+            checkAndRequestPermissions()
         }
 
 
@@ -111,18 +113,19 @@ class SelectConnectionActivity: AppCompatActivity() {
 
             linearWifi.visibility = View.VISIBLE
 
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    LOCATION_PERMISSION_REQUEST_CODE
-                )
-            } else {
-                startWifiScan()
-            }
+//            if (ContextCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED
+//            ) {
+//                requestPermissions(
+//                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//                    LOCATION_PERMISSION_REQUEST_CODE
+//                )
+//            } else {
+//                startWifiScan()
+//            }
+            checkAndRequestPermissions()
         }
 
         wifiList.setOnItemClickListener { _, _, position, _ ->
@@ -139,10 +142,23 @@ class SelectConnectionActivity: AppCompatActivity() {
     ) {
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("WiFiPermission", "Permission result: ${grantResults.contentToString()}")
+
+                // Cek apakah semua permission diberikan
+                var allGranted = true
+                for (result in grantResults) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        allGranted = false
+                        break
+                    }
+                }
+
+                if (allGranted && grantResults.isNotEmpty()) {
+                    Log.d("WiFiPermission", "All permissions granted")
                     startWifiScan()
                 } else {
-                    Toast.makeText(this, "Izin lokasi diperlukan untuk memindai WiFi", Toast.LENGTH_SHORT).show()
+                    Log.d("WiFiPermission", "Some permissions denied")
+                    Toast.makeText(this, "Izin lokasi dan WiFi diperlukan untuk memindai WiFi", Toast.LENGTH_LONG).show()
                 }
                 return
             }
@@ -152,16 +168,62 @@ class SelectConnectionActivity: AppCompatActivity() {
         }
     }
 
+    private fun checkAndRequestPermissions() {
+        val permissions = mutableListOf<String>()
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
+        // Untuk Android 13+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.NEARBY_WIFI_DEVICES)
+                != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.NEARBY_WIFI_DEVICES)
+            }
+        }
+
+        if (permissions.isNotEmpty()) {
+            requestPermissions(permissions.toTypedArray(), LOCATION_PERMISSION_REQUEST_CODE)
+        } else {
+            startWifiScan()
+        }
+    }
+
+//    private fun startWifiScan() {
+//        adapter.clear()
+//        wifiScanResults.clear()
+//        progressBarWifi.visibility = View.VISIBLE
+//        this.registerReceiver(
+//            wifiScanReceiver,
+//            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+//        )
+//        wifiManager.startScan()
+//        Toast.makeText(this, "Memindai jaringan WiFi...", Toast.LENGTH_SHORT).show()
+//    }
+
     private fun startWifiScan() {
+        Log.d("WiFiScan", "Starting WiFi scan...")
+        Log.d("WiFiScan", "WiFi enabled: ${wifiManager.isWifiEnabled}")
+        Log.d("WiFiScan", "Android version: ${android.os.Build.VERSION.SDK_INT}")
+
         adapter.clear()
         wifiScanResults.clear()
         progressBarWifi.visibility = View.VISIBLE
-        this.registerReceiver(
-            wifiScanReceiver,
-            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        )
-        wifiManager.startScan()
-        Toast.makeText(this, "Memindai jaringan WiFi...", Toast.LENGTH_SHORT).show()
+
+        try {
+            this.registerReceiver(
+                wifiScanReceiver,
+                IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+            )
+            val scanStarted = wifiManager.startScan()
+            Log.d("WiFiScan", "Scan started: $scanStarted")
+            Toast.makeText(this, "Memindai jaringan WiFi...", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Log.e("WiFiScan", "Error starting scan: ${e.message}")
+            progressBarWifi.visibility = View.GONE
+        }
     }
 
     private fun scanSuccess() {
