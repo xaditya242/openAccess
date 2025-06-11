@@ -12,7 +12,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_weight="2.5"
         android:gravity="center">
         <LinearLayout
@@ -237,7 +237,7 @@
                                 android:layout_marginLeft="10dp"
                                 android:text="Open"
                                 android:textColor="@color/black"
-                                android:textSize="17sp" />
+                                android:autoSizeTextType="uniform" />
                         </LinearLayout>
                         <ImageView
                             android:id="@+id/storm"

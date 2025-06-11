@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-<!--    <domain-config cleartextTrafficPermitted="true">-->
-<!--        <domain includeSubdomains="true">192.168.4.1</domain>-->
-<!--    </domain-config>-->
-    <base-config cleartextTrafficPermitted="true" />
+    <!-- Allow cleartext (HTTP) traffic for ESP communication -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">192.168.4.1</domain>
+        <domain includeSubdomains="true">192.168.1.0/24</domain>
+        <domain includeSubdomains="true">192.168.0.0/24</domain>
+        <domain includeSubdomains="true">10.0.0.0/8</domain>
+    </domain-config>
+
+    <!-- Base config for HTTPS traffic -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
 </network-security-config>

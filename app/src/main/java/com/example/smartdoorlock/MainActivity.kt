@@ -52,15 +52,20 @@ class MainActivity : AppCompatActivity() {
     private var move: Boolean = false
 
     private var lastUpdateTime: Long = 0
+    private var hasReceivedToggleData = false // Tambah flag ini
     private val timeoutMillis: Long = 10000 // 10 detik
-    private val checkInterval: Long = 5000 // cek setiap 2 detik
+    private val checkInterval: Long = 10000 // cek setiap 5 detik
 
     private val handler = Handler(Looper.getMainLooper())
     private val statusChecker = object : Runnable {
         override fun run() {
-            val currentTime = System.currentTimeMillis()
-            val isOnline = (currentTime - lastUpdateTime <= timeoutMillis)
-            showStatus(isOnline)
+            // Hanya cek status jika sudah pernah menerima data toggle
+            if (hasReceivedToggleData) {
+                val currentTime = System.currentTimeMillis()
+                val isOnline = (currentTime - lastUpdateTime <= timeoutMillis)
+                showStatus(isOnline)
+            }
+            // Jika belum menerima data toggle, jangan tampilkan indikator apapun
             handler.postDelayed(this, checkInterval)
         }
     }
@@ -116,10 +121,13 @@ class MainActivity : AppCompatActivity() {
         val espId = getEspIdFromSession() // Ambil ID ESP dari session
         Log.d("DEBUG", "ID ESP dari session: $espId")
 
+        findViewById<ImageView>(R.id.onlineIndicator).visibility = View.INVISIBLE
+
         val userId = currentUser.uid
         val databaseReference = FirebaseDatabase.getInstance().getReference("openAccess")
 
         databaseReference.addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.Q)
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (child in snapshot.children) {
                     val userIdFromDb = child.child("UserInfo/userId").value.toString()
@@ -135,6 +143,14 @@ class MainActivity : AppCompatActivity() {
 
                         val toggleValue = child.child("DeviceStatus/Toggle").value as? Boolean
                         if (toggleValue != null) {
+                            // Hanya update jika ini adalah data toggle yang benar-benar baru
+                            if (!hasReceivedToggleData) {
+                                hasReceivedToggleData = true
+                                // Mulai statusChecker hanya setelah benar-benar menerima toggle pertama kali
+                                if (!handler.hasCallbacks(statusChecker)) {
+                                    handler.post(statusChecker)
+                                }
+                            }
                             lastUpdateTime = System.currentTimeMillis()
                             Log.d("TOGGLE", "Toggle diterima: $toggleValue")
                         } else {
@@ -164,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                         break
                     }
                 }
-                handler.post(statusChecker)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -252,7 +268,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showStatus(isOnline: Boolean) {
-        val statusView = findViewById<ImageView>(R.id.onlineIndicator) // tambahkan ini di layout kamu
+        val statusView = findViewById<ImageView>(R.id.onlineIndicator)
         if (isOnline) {
             statusView.visibility = View.VISIBLE
         } else {
