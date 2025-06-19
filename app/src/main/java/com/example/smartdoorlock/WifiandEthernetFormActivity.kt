@@ -49,7 +49,6 @@ class WifiandEthernetFormActivity: AppCompatActivity() {
     private lateinit var statusTextView: TextView
 
     private var networkCallback: ConnectivityManager.NetworkCallback? = null
-    private val CONFIGURATION_TIMEOUT_MS: Long = 30000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

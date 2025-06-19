@@ -1,16 +1,16 @@
 package com.example.smartdoorlock
 
+import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
@@ -21,16 +21,14 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.smartdoorlock.R.color.white
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
@@ -51,25 +49,6 @@ class MainActivity : AppCompatActivity() {
     private var value: Int = 0
     private var move: Boolean = false
 
-    private var lastUpdateTime: Long = 0
-    private var hasReceivedToggleData = false // Tambah flag ini
-    private val timeoutMillis: Long = 10000 // 10 detik
-    private val checkInterval: Long = 10000 // cek setiap 5 detik
-
-    private val handler = Handler(Looper.getMainLooper())
-    private val statusChecker = object : Runnable {
-        override fun run() {
-            // Hanya cek status jika sudah pernah menerima data toggle
-            if (hasReceivedToggleData) {
-                val currentTime = System.currentTimeMillis()
-                val isOnline = (currentTime - lastUpdateTime <= timeoutMillis)
-                showStatus(isOnline)
-            }
-            // Jika belum menerima data toggle, jangan tampilkan indikator apapun
-            handler.postDelayed(this, checkInterval)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -82,7 +61,17 @@ class MainActivity : AppCompatActivity() {
         val textID = findViewById<TextView>(R.id.textID)
         val textUser = findViewById<TextView>(R.id.textUser)
 
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    100
+                )
+            }
+        }
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         var isMovedUp = sharedPreferences.getBoolean("isMovedUp", move)
@@ -141,20 +130,22 @@ class MainActivity : AppCompatActivity() {
                         ssid_ip = child.child("Credentials/SSID_IP").value.toString()
                         mode_connection = child.child("Credentials/Mode").value.toString()
 
-                        val toggleValue = child.child("DeviceStatus/Toggle").value as? Boolean
-                        if (toggleValue != null) {
-                            // Hanya update jika ini adalah data toggle yang benar-benar baru
-                            if (!hasReceivedToggleData) {
-                                hasReceivedToggleData = true
-                                // Mulai statusChecker hanya setelah benar-benar menerima toggle pertama kali
-                                if (!handler.hasCallbacks(statusChecker)) {
-                                    handler.post(statusChecker)
-                                }
+                        val toggleValue = child.child("DeviceStatus/Toggle").value as? Long
+                        val lastOnline = toggleValue ?: 0L
+                        val current = System.currentTimeMillis() / 1000  // detik
+
+                        val diff = current - lastOnline
+
+                        when {
+                            diff <= 7 -> {
+                                showStatus(true)
                             }
-                            lastUpdateTime = System.currentTimeMillis()
-                            Log.d("TOGGLE", "Toggle diterima: $toggleValue")
-                        } else {
-                            Log.w("TOGGLE", "Path toggle belum ada atau nilainya null")
+                            diff in 8..20 -> {
+                                showStatus(false)
+                            }
+                            else -> {
+                                showStatus(false)
+                            }
                         }
 
                         if (currentValue == 1) move = true
@@ -184,12 +175,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //tvData.text = "Failed to load data: ${error.message}"
             }
         })
 
         findViewById<ImageView>(R.id.settingBt).setOnClickListener {
-            //startActivity(Intent(this, SettingActivity::class.java))
             val intent = Intent(this, SettingActivity::class.java)
             intent.putExtra("esp_ssid", ssid_ip)
             intent.putExtra("koneksi", mode_connection)
@@ -204,22 +193,18 @@ class MainActivity : AppCompatActivity() {
             cardView.translationY = -onOff.height.toFloat() + (onOff.height.toFloat()/9)
             imageView.setImageResource(R.drawable.unlock)
             onOff.backgroundTintList = getColorStateList(R.color.black)
-//            btCard.backgroundTintList = getColorStateList(white)
             status.text = "Opened"
             isOn = true
-//            status.setTextColor(ContextCompat.getColor(this, R.color.white))
         } else {
             cardView.translationY = (onOff.height.toFloat()/1000)
             imageView.setImageResource(R.drawable.locked)
             onOff.backgroundTintList = getColorStateList(white)
-//            btCard.backgroundTintList = getColorStateList(R.color.black)
             status.text = "Closed"
             isOn = false
-//            status.setTextColor(ContextCompat.getColor(this, R.color.black))
         }
 
-        // Listener untuk cardView
         cardView.setOnClickListener {
+//            Untuk debuging
 //            val tvTimestamp = findViewById<TextView>(R.id.tvTimestamp)
 //            val currentTime = Calendar.getInstance().time
 //            val formatter = SimpleDateFormat("HH:mm:ss:SSS", Locale.getDefault())
@@ -312,7 +297,6 @@ class MainActivity : AppCompatActivity() {
         colorAnimation.duration = duration
         colorAnimation.addUpdateListener { animator ->
             val color = animator.animatedValue as Int
-            // Update backgroundTintList dengan warna yang sedang dianimasikan
             view.backgroundTintList = ColorStateList.valueOf(color)
         }
         colorAnimation.start()
@@ -331,7 +315,6 @@ class MainActivity : AppCompatActivity() {
         if (user != null) {
             val userId = user.uid
 
-            // Cari IDESP berdasarkan userId di semua IDESP
             val smartDoorRef = FirebaseDatabase.getInstance().getReference("openAccess")
 
             smartDoorRef.get().addOnSuccessListener { smartDoorSnapshot ->
@@ -340,16 +323,13 @@ class MainActivity : AppCompatActivity() {
                     val userInfoSnapshot = idEspSnapshot.child("UserInfo").child("userId")
 
                     if (userInfoSnapshot.exists() && userInfoSnapshot.value == userId) {
-                        // Path ke LockCommand
                         val lockCommandRef = FirebaseDatabase.getInstance().getReference("openAccess")
                             .child(idEsp).child("dataStream/Data").child("lockCommand")
 
-                        // Ambil nilai LockCommand saat ini untuk toggling
                         lockCommandRef.get().addOnSuccessListener { commandSnapshot ->
                             currentValue = commandSnapshot.getValue(Int::class.java) ?: 0
                             val newValue = if (isOn) 1 else 0
 
-                            // Tulis nilai baru ke LockCommand
                             lockCommandRef.setValue(newValue).addOnSuccessListener {
                                 println("LockCommand updated successfully to ${'$'}newValue")
                             }.addOnFailureListener { e ->
