@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="13dp"
-                android:hint="SSID"
+                android:hint="IP Address"
                 android:backgroundTint="@color/white"
                 android:textColorHint="@color/white"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="13dp"
-                android:hint="Password"
+                android:hint="Gateway"
                 android:textColorHint="@color/white"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxBackgroundMode="outline"
@@ -102,17 +102,66 @@
                 app:boxStrokeColor="@color/white"
                 app:hintTextColor="@color/white"
                 app:boxStrokeWidthFocused="2dp"
-                app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword"
+                    android:inputType="text"
                     android:textColor="@color/white"
                     android:textCursorDrawable="@drawable/custom_cursor"
                     android:textColorHint="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/containerSubnet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="13dp"
+                android:hint="Subnet"
+                android:backgroundTint="@color/white"
+                android:textColorHint="@color/white"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxBackgroundMode="outline"
+                app:boxBackgroundColor="@color/merah"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white"
+                app:boxStrokeWidthFocused="2dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etSubnet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/containerDNS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="13dp"
+                android:hint="DNS"
+                android:backgroundTint="@color/white"
+                android:textColorHint="@color/white"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxBackgroundMode="outline"
+                app:boxBackgroundColor="@color/merah"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white"
+                app:boxStrokeWidthFocused="2dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDNS"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
 

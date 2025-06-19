@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         val espId = getEspIdFromSession() // Ambil ID ESP dari session
         Log.d("DEBUG", "ID ESP dari session: $espId")
 
-        findViewById<ImageView>(R.id.onlineIndicator).visibility = View.INVISIBLE
 
         val userId = currentUser.uid
         val databaseReference = FirebaseDatabase.getInstance().getReference("openAccess")
@@ -129,24 +128,6 @@ class MainActivity : AppCompatActivity() {
                         currentValue = child.child("dataStream/Data/lockCommand").value.toString().toInt()
                         ssid_ip = child.child("Credentials/SSID_IP").value.toString()
                         mode_connection = child.child("Credentials/Mode").value.toString()
-
-                        val toggleValue = child.child("DeviceStatus/Toggle").value as? Long
-                        val lastOnline = toggleValue ?: 0L
-                        val current = System.currentTimeMillis() / 1000  // detik
-
-                        val diff = current - lastOnline
-
-                        when {
-                            diff <= 7 -> {
-                                showStatus(true)
-                            }
-                            diff in 8..20 -> {
-                                showStatus(false)
-                            }
-                            else -> {
-                                showStatus(false)
-                            }
-                        }
 
                         if (currentValue == 1) move = true
                         else move = false
@@ -250,15 +231,6 @@ class MainActivity : AppCompatActivity() {
             dp.toFloat(),
             resources.displayMetrics
         ).toInt()
-    }
-
-    private fun showStatus(isOnline: Boolean) {
-        val statusView = findViewById<ImageView>(R.id.onlineIndicator)
-        if (isOnline) {
-            statusView.visibility = View.VISIBLE
-        } else {
-            statusView.visibility = View.INVISIBLE
-        }
     }
 
     private fun animateResize(view: View, targetWidth: Int, targetHeight: Int, duration : Long = 300) {

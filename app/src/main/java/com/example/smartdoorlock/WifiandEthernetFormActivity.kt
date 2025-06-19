@@ -37,6 +37,8 @@ class WifiandEthernetFormActivity: AppCompatActivity() {
     private lateinit var ssidEditText: TextInputEditText
     private lateinit var ssidEditTextHint: TextInputLayout
     private lateinit var passwordEditText: TextInputEditText
+    private lateinit var dnsEditText: TextInputEditText
+    private lateinit var SubnetEditText: TextInputEditText
     private lateinit var submitButton: Button
     private lateinit var tvTitle: TextView
     private lateinit var tvSubTitle: TextView
